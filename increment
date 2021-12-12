@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# this script increment a counter inside file name 
+# eaxamle : the file "file_001-type2.jpeg" becomes "file_002-type2.jpeg"
+
+for file in $(ls)
+do
+	if [ $file != ${0:2} ]; then
+		bruteCounter=$(echo $file | sed -r 's/.*(_[0-9]{3}-).*$/\1/') # search for patterns like _001- or _002-  
+		counterWithoutDash=${bruteCounter:1} # remove the first character from the String. Example : _001- becomes 001-
+		counter=${counterWithoutDash::-1} # remove the last character from the String. Example : 001- becomes 001
+		incrementedCounter=$(printf "%03d" $((counter + 1))) # increment numner by 1 and added leading zeros if necessary
+		incrementedBruteCounter="_${incrementedCounter}-" # concatenate number with _ at the begining and - at the end
+        mv $file ${file/$bruteCounter/$incrementedBruteCounter} # rename file 	
+	fi
+done	
+
